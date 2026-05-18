@@ -53,6 +53,12 @@
         .fr-firmas { display: flex; justify-content: space-between; margin-top: 40px; margin-bottom: 20px; text-align: center; font-size: 10px; font-weight: bold; }
         .fr-firma-box { width: 45%; }
 
+        /* ESTILOS NUEVOS PARA LA CUADRÍCULA DE FOTOS */
+        .grid-fotos-reales { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%; margin: 0 auto; }
+        .foto-card { border: 1px solid black; padding: 3px; text-align: center; background-color: #fafafa; }
+        .foto-header-title { font-size: 8px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid black; margin-bottom: 4px; padding-bottom: 1px; background-color: #f3f4f6; }
+        .foto-img-element { height: 135px; width: 100%; object-fit: contain; margin: 0 auto; display: block; }
+
         .hidden-hoja { display: none !important; }
     </style>
 </head>
@@ -291,9 +297,13 @@
                 <span class="fr-line" id="fr-km"></span>
             </div>
 
-            <div class="fr-label" style="margin-top: 20px; margin-bottom: 10px;">ESTATUS CARROCERÍA</div>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <img src="esquema_autobuses.png" alt="Esquema Autobuses" style="max-width: 100%; max-height: 350px; object-fit: contain; margin: 0 auto;" onerror="this.outerHTML='<div style=\\'border: 2px dashed #ccc; padding: 50px; color: #888; font-weight: bold;\\'>FALTA IMAGEN: Guarda la foto de los camiones como esquema_autobuses.png</div>'">
+            <div class="fr-label" style="margin-top: 20px; margin-bottom: 10px;">ESTATUS CARROCERÍA (EVIDENCIAS FOTOGRÁFICAS)</div>
+            
+            <div class="grid-fotos-reales" style="margin-bottom: 15px;">
+                <div class="foto-card"><div class="foto-header-title">1. VISTA FRONTAL</div><img id="img-front" src="" class="foto-img-element" onerror="this.src='https://placehold.co/400x300?text=Sin+Foto+Frontal'"></div>
+                <div class="foto-card"><div class="foto-header-title">2. VISTA TRASERA</div><img id="img-back" src="" class="foto-img-element" onerror="this.src='https://placehold.co/400x300?text=Sin+Foto+Trasera'"></div>
+                <div class="foto-card"><div class="foto-header-title">3. LATERAL DERECHO</div><img id="img-right" src="" class="foto-img-element" onerror="this.src='https://placehold.co/400x300?text=Sin+Foto+Der'"></div>
+                <div class="foto-card"><div class="foto-header-title">4. LATERAL IZQUIERDO</div><img id="img-left" src="" class="foto-img-element" onerror="this.src='https://placehold.co/400x300?text=Sin+Foto+Izq'"></div>
             </div>
 
             <div class="fr-obs-box">
@@ -356,6 +366,9 @@
         let historialGlobal = [];
         let modoSoloLectura = false; 
 
+        // VARIABLES GLOBALES PARA ATRAPAR LAS FOTOS
+        window.urlFotoFrontal = ""; window.urlFotoTrasera = ""; window.urlFotoDerecha = ""; window.urlFotoIzquierda = "";
+
         const listaServicios = [
             "CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE",
             "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR",
@@ -380,7 +393,6 @@
                 return; 
             }
             
-            // LA CORRECCIÓN CLAVE: DIBUJAMOS LOS CUADRITOS ANTES DE LEER LA URL
             restaurarFecha();
             cargarCheckboxes();
             
@@ -391,6 +403,12 @@
                 const comentarios = params.get('comentarios'); 
                 const manto = params.get('manto');             
                 
+                // ATRAPAMOS LAS FOTOS DE LUIS
+                window.urlFotoFrontal = params.get('f_frontal') || "";
+                window.urlFotoTrasera = params.get('f_trasera') || "";
+                window.urlFotoDerecha = params.get('f_derecha') || "";
+                window.urlFotoIzquierda = params.get('f_izquierda') || "";
+
                 window.filaExcelOrigen = params.get('fila');
                 window.hojaExcelOrigen = params.get('hoja');
 
@@ -541,9 +559,13 @@
                                 <span class="fr-line">${datos.kilometraje ? new Intl.NumberFormat('es-MX').format(datos.kilometraje) : ''}</span>
                             </div>
 
-                            <div class="fr-label" style="margin-top: 20px; margin-bottom: 10px;">ESTATUS CARROCERÍA</div>
-                            <div style="text-align: center; margin-bottom: 15px;">
-                                <img src="esquema_autobuses.png" alt="Esquema Autobuses" style="max-width: 100%; max-height: 350px; object-fit: contain; margin: 0 auto;" onerror="this.outerHTML='<div style=\\'border: 2px dashed #ccc; padding: 50px; color: #888; font-weight: bold;\\'>FALTA IMAGEN: Guarda la foto de los camiones como esquema_autobuses.png</div>'">
+                            <div class="fr-label" style="margin-top: 20px; margin-bottom: 10px;">ESTATUS CARROCERÍA (EVIDENCIAS FOTOGRÁFICAS)</div>
+                            
+                            <div class="grid-fotos-reales" style="margin-bottom: 15px;">
+                                <div class="foto-card"><div class="foto-header-title">1. VISTA FRONTAL</div><img id="img-front-fb" src="${datos.fotos && datos.fotos.frontal ? datos.fotos.frontal : 'https://placehold.co/400x300?text=Sin+Foto+Frontal'}" class="foto-img-element"></div>
+                                <div class="foto-card"><div class="foto-header-title">2. VISTA TRASERA</div><img id="img-back-fb" src="${datos.fotos && datos.fotos.trasera ? datos.fotos.trasera : 'https://placehold.co/400x300?text=Sin+Foto+Trasera'}" class="foto-img-element"></div>
+                                <div class="foto-card"><div class="foto-header-title">3. LATERAL DERECHO</div><img id="img-right-fb" src="${datos.fotos && datos.fotos.derecha ? datos.fotos.derecha : 'https://placehold.co/400x300?text=Sin+Foto+Der'}" class="foto-img-element"></div>
+                                <div class="foto-card"><div class="foto-header-title">4. LATERAL IZQUIERDO</div><img id="img-left-fb" src="${datos.fotos && datos.fotos.izquierda ? datos.fotos.izquierda : 'https://placehold.co/400x300?text=Sin+Foto+Izq'}" class="foto-img-element"></div>
                             </div>
 
                             <div class="fr-obs-box">
@@ -870,10 +892,17 @@
             document.getElementById('fr-fecha-ingreso').innerText = fechaString;
             document.getElementById('fr-fecha-salida').innerText = fechaString;
 
+            // PEGADO DE FOTOS REALES EN LA VISTA EN VIVO
+            if(window.urlFotoFrontal) document.getElementById('img-front').src = window.urlFotoFrontal;
+            if(window.urlFotoTrasera) document.getElementById('img-back').src = window.urlFotoTrasera;
+            if(window.urlFotoDerecha) document.getElementById('img-right').src = window.urlFotoDerecha;
+            if(window.urlFotoIzquierda) document.getElementById('img-left').src = window.urlFotoIzquierda;
+
             if(serviciosMarcados.length > 0 || valorGrupo === "Correctivo") {
                 guardarEnFirebase({ 
                     fecha: fechaString, economico: economico, base: base, kilometraje: kilometraje,
-                    mecanico: mecanico, comentarios: textoComentarios, servicios: serviciosMarcados, grupo: grupoSeleccionado
+                    mecanico: mecanico, comentarios: textoComentarios, servicios: serviciosMarcados, grupo: grupoSeleccionado,
+                    fotos: { frontal: window.urlFotoFrontal, trasera: window.urlFotoTrasera, derecha: window.urlFotoDerecha, izquierda: window.urlFotoIzquierda }
                 });
             }
 
@@ -892,7 +921,7 @@
                 const docRef = await addDoc(serviciosRef, {
                     economico: registro.economico, fecha: registro.fecha, base: registro.base, kilometraje: registro.kilometraje,
                     mecanico: registro.mecanico, comentarios: registro.comentarios || '', servicios: registro.servicios,
-                    grupo: registro.grupo, timestamp: Date.now()
+                    grupo: registro.grupo, fotos: registro.fotos || null, timestamp: Date.now()
                 });
 
                 if (window.filaExcelOrigen && window.hojaExcelOrigen) {
@@ -958,7 +987,6 @@
             if(confirm("¿Estás seguro de borrar este registro?")) { try { await deleteDoc(doc(db, "servicios", id)); } catch (e) { console.error(e); } }
         }
 
-        // CSV Download layout remains unchanged
         function descargarExcel() {
             if(historialGlobal.length === 0) { alert("No hay registros."); return; }
             let csvContent = '\uFEFF' + "FECHA,ECONOMICO,BASE,KILOMETRAJE,MECANICO,GRUPO,COMENTARIOS,CANTIDAD,MANTENIMIENTOS\n";
@@ -971,7 +999,6 @@
             const a = document.createElement("a"); a.href = url; a.download = "Historial_Servicios.csv"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
-        // Filter functionality remains unchanged
         function filtrarHistorial() {
             const filter = document.getElementById("buscadorHistorial").value.toUpperCase();
             const tr = document.getElementById("tabla-historial-body").getElementsByTagName("tr");
