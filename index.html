@@ -294,7 +294,7 @@
 
             <div class="fr-row">
                 <span class="fr-label">KILOMETROS ENTRADA.</span> 
-                <span class="fr-line" id="fr-km"></span>
+                <span class="fr-line-fixed" style="width: 150px;" id="fr-km"></span>
             </div>
 
             <div class="fr-label" style="margin-top: 20px; margin-bottom: 10px;">ESTATUS CARROCERÍA (EVIDENCIAS FOTOGRÁFICAS)</div>
@@ -366,7 +366,6 @@
         let historialGlobal = [];
         let modoSoloLectura = false; 
 
-        // VARIABLES GLOBALES PARA ATRAPAR LAS FOTOS
         window.urlFotoFrontal = ""; window.urlFotoTrasera = ""; window.urlFotoDerecha = ""; window.urlFotoIzquierda = "";
 
         const listaServicios = [
@@ -403,7 +402,6 @@
                 const comentarios = params.get('comentarios'); 
                 const manto = params.get('manto');             
                 
-                // ATRAPAMOS LAS FOTOS DE LUIS
                 window.urlFotoFrontal = params.get('f_frontal') || "";
                 window.urlFotoTrasera = params.get('f_trasera') || "";
                 window.urlFotoDerecha = params.get('f_derecha') || "";
@@ -441,7 +439,7 @@
         });
 
         // ============================================================================
-        // FIX EN LECTURA DESDE FIREBASE (MODO SOLO LECTURA DESDE EXCEL)
+        // LECTURA DESDE FIREBASE (MODO SOLO LECTURA DESDE EXCEL)
         // ============================================================================
         async function cargarHojaDesdeFirebase(idServicio) {
             try {
@@ -556,7 +554,7 @@
 
                             <div class="fr-row">
                                 <span class="fr-label">KILOMETROS ENTRADA.</span> 
-                                <span class="fr-line">${datos.kilometraje ? new Intl.NumberFormat('es-MX').format(datos.kilometraje) : ''}</span>
+                                <span class="fr-line-fixed" style="width: 150px;">${datos.kilometraje ? new Intl.NumberFormat('es-MX').format(datos.kilometraje) : ''}</span>
                             </div>
 
                             <div class="fr-label" style="margin-top: 20px; margin-bottom: 10px;">ESTATUS CARROCERÍA (EVIDENCIAS FOTOGRÁFICAS)</div>
@@ -624,7 +622,6 @@
                     listaServicios.forEach((servicio) => {
                         const isChecked = serviciosRealizados.includes(servicio);
                         const marca = isChecked ? palomitaVerde : ''; 
-                        // REVISIÓN DE PERSONA EN LECTURA: Si no está marcado, celda vacía
                         const persona = isChecked ? datos.mecanico : '';
 
                         const tr = document.createElement('tr');
@@ -658,7 +655,7 @@
                     }
                     
                     if(document.getElementById('btn-volver-ui')) document.getElementById('btn-volver-ui').style.display = 'none';
-                    toggleHojas('ambas'); // Mostrar ambas por defecto al abrir desde Excel
+                    toggleHojas('ambas'); 
 
                 } else {
                     document.getElementById('print-container').innerHTML = '<div class="text-center p-10 font-bold text-lg text-red-600">Error: El registro de servicio no fue encontrado.</div>';
@@ -769,7 +766,6 @@
             }
         }
 
-        // LÓGICA DE BOTONES DOBLE VISTA
         function toggleHojas(vista) {
             const hojaS = document.getElementById('hoja-servicio-container');
             const hojaR = document.getElementById('hoja-recepcion-container');
@@ -818,7 +814,6 @@
                 fechaString = `${day}/${month}/${year}`;
             }
             
-            // Llenar Formato 1: Servicio
             document.getElementById('print-eco').innerText = economico;
             document.getElementById('print-base').innerText = base;
             document.getElementById('print-km').innerText = kilometraje ? new Intl.NumberFormat('es-MX').format(kilometraje) : "";
@@ -871,7 +866,6 @@
                 const isChecked = chk ? chk.checked : false; 
                 
                 const marca = isChecked ? palomitaVerde : ''; 
-                // REVISIÓN DE PERSONA EN VIVO: Si no está marcado, la variable persona se queda en blanco
                 const persona = isChecked ? mecanico : '';
                 if(isChecked) serviciosMarcados.push(servicio);
 
@@ -885,7 +879,6 @@
                 tbodyPrint.appendChild(tr);
             });
 
-            // Llenar Formato 2: Recepción
             document.getElementById('fr-eco').innerText = economico;
             document.getElementById('fr-base').innerText = base;
             document.getElementById('fr-km').innerText = kilometraje ? new Intl.NumberFormat('es-MX').format(kilometraje) : "";
@@ -908,7 +901,7 @@
 
             document.getElementById('ui-container').style.display = 'none';
             document.getElementById('print-container').style.display = 'block';
-            toggleHojas('ambas'); // Mostrar ambas por defecto
+            toggleHojas('ambas'); 
             
             if(document.getElementById('btn-volver-ui')) {
                 document.getElementById('btn-volver-ui').style.display = 'inline-block';
