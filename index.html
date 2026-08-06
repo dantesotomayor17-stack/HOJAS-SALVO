@@ -95,10 +95,11 @@
 
             <div id="vista-nuevo">
                 <form id="serviceForm" class="p-6" onsubmit="generarHoja(event)">
-                    <!-- ✅ NUEVO: se agregó el campo "NOMBRE OPERADOR" (lg:grid-cols-6 para que quepan los 6 campos) -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <!-- ✅ NUEVO: se agregó la casilla "VIN" y el grid pasó a 4 columnas para que todo quepa amplio y al 100 -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8 bg-slate-50 p-4 rounded-lg border border-slate-200">
                         <div><label class="block text-sm font-semibold text-slate-700 mb-1">ECONÓMICO</label><input type="text" id="inputEco" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 uppercase" placeholder="Ej. ECO-01"></div>
                         <div><label class="block text-sm font-semibold text-slate-700 mb-1">BASE / RUTA</label><input type="text" id="inputBase" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 uppercase" placeholder="Ej. BASE NORTE"></div>
+                        <div><label class="block text-sm font-semibold text-slate-700 mb-1">VIN</label><input type="text" id="inputVin" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 uppercase" placeholder="Ej. 5YJBUS2C8SF000000" maxlength="17"></div>
                         <div><label class="block text-sm font-semibold text-slate-700 mb-1">KILOMETRAJE</label><input type="number" id="inputKm" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500" placeholder="Ej. 120000"></div>
                         <div><label class="block text-sm font-semibold text-slate-700 mb-1">NOMBRE OPERADOR</label><input type="text" id="inputOperador" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 uppercase" placeholder="Ej. JUAN PEREZ"></div>
                         <div><label class="block text-sm font-semibold text-slate-700 mb-1">MECÁNICO</label><input type="text" id="inputMecanico" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 uppercase" placeholder="Ej. LUIS"></div>
@@ -240,14 +241,16 @@
 
             <div class="fr-title" id="fr-titulo-hoja">FORMATO RECEPCION.</div>
 
+            <!-- ✅ NUEVO: al lado de RUTA / BASE se agregó "VIN:" con su renglón (anchos recalculados para que quepa al 100) -->
             <div class="fr-row">
                 <span class="fr-label">NUM. ECONÓMICO:</span> 
-                <span class="fr-line-fixed" style="width: 100px;" id="fr-eco"></span>
-                <span class="fr-label" style="margin-left: 20px;">RUTA / BASE:</span> 
-                <span class="fr-line-fixed" style="width: 150px;" id="fr-base"></span>
+                <span class="fr-line-fixed" style="width: 80px;" id="fr-eco"></span>
+                <span class="fr-label" style="margin-left: 15px;">RUTA / BASE:</span> 
+                <span class="fr-line-fixed" style="width: 130px;" id="fr-base"></span>
+                <span class="fr-label" style="margin-left: 15px;">VIN:</span> 
+                <span class="fr-line-fixed" style="width: 150px;" id="fr-vin"></span>
             </div>
 
-            <!-- ✅ NUEVO: al lado de KILOMETROS ENTRADA se agregó "NOMBRE DE OPERADOR" con su renglón -->
             <div class="fr-row">
                 <span class="fr-label">KILOMETROS ENTRADA.</span> 
                 <span class="fr-line-fixed" style="width: 150px;" id="fr-km-recepcion"></span>
@@ -452,8 +455,9 @@
 
             const economico = document.getElementById('inputEco').value.toUpperCase();
             const base = document.getElementById('inputBase').value.toUpperCase();
+            const vin = document.getElementById('inputVin').value.toUpperCase(); // ✅ NUEVO: lee el VIN
             const kilometraje = document.getElementById('inputKm').value;
-            const operador = document.getElementById('inputOperador').value.toUpperCase(); // ✅ NUEVO: lee el nombre del operador
+            const operador = document.getElementById('inputOperador').value.toUpperCase();
             const mecanico = document.getElementById('inputMecanico').value.toUpperCase();
             const textoComentarios = document.getElementById('inputComentarios').value.toUpperCase();
             const textoObsEsteticas = document.getElementById('inputObsEsteticas').value.toUpperCase();
@@ -537,8 +541,9 @@
 
             document.getElementById('fr-eco').innerText = economico;
             document.getElementById('fr-base').innerText = base;
+            document.getElementById('fr-vin').innerText = vin; // ✅ NUEVO: manda el VIN al renglón de la hoja
             document.getElementById('fr-km-recepcion').innerText = kilometraje ? new Intl.NumberFormat('es-MX').format(kilometraje) : "";
-            document.getElementById('fr-operador').innerText = operador; // ✅ NUEVO: manda el nombre al renglón de la hoja
+            document.getElementById('fr-operador').innerText = operador;
 
             const esSalida = (window.movimientoTipo === "SALIDA");
 
@@ -641,8 +646,8 @@
 
             if(!modoSoloLectura && (serviciosMarcados.length > 0 || valorGrupo === "Correctivo")) {
                 guardarEnFirebase({ 
-                    fecha: fechaString, economico: economico, base: base, kilometraje: kilometraje,
-                    operador: operador, // ✅ NUEVO: también se guarda en Firebase
+                    fecha: fechaString, economico: economico, base: base, vin: vin, kilometraje: kilometraje, // ✅ NUEVO: vin se guarda
+                    operador: operador,
                     mecanico: mecanico, comentarios: textoComentarios, obsEsteticas: window.obsEsteticas, servicios: serviciosMarcados, grupo: grupoSeleccionado,
                     fotos: { frontal: window.urlFotoFrontal, trasera: window.urlFotoTrasera, derecha: window.urlFotoDerecha, izquierda: window.urlFotoIzquierda, licencia: window.urlFotoLicencia }
                 });
@@ -656,8 +661,8 @@
                 document.getElementById('btn-tg-servicio').style.display = 'none';
                 document.getElementById('btn-tg-ambas').style.display = 'none';
 
-                // ✅ NUEVO: se agrega &operador= al link de salida para conservar el dato
-                const linkSalida = `https://dantesotomayor17-stack.github.io/gestion-servicios-ego/?unidad=${encodeURIComponent(economico)}&ruta=${encodeURIComponent(base)}&km=${encodeURIComponent(kilometraje)}&operador=${encodeURIComponent(operador)}&comentarios=${encodeURIComponent(textoComentarios)}&obsest=${encodeURIComponent(window.obsEsteticas || '')}&movimiento=SALIDA&f_frontal=${encodeURIComponent(window.urlFotoFrontal)}&f_trasera=${encodeURIComponent(window.urlFotoTrasera)}&f_derecha=${encodeURIComponent(window.urlFotoDerecha)}&f_izquierda=${encodeURIComponent(window.urlFotoIzquierda)}&f_licencia=${encodeURIComponent(window.urlFotoLicencia)}`;
+                // ✅ NUEVO: se agrega &vin= al link de salida para conservar el dato
+                const linkSalida = `https://dantesotomayor17-stack.github.io/gestion-servicios-ego/?unidad=${encodeURIComponent(economico)}&ruta=${encodeURIComponent(base)}&vin=${encodeURIComponent(vin)}&km=${encodeURIComponent(kilometraje)}&operador=${encodeURIComponent(operador)}&comentarios=${encodeURIComponent(textoComentarios)}&obsest=${encodeURIComponent(window.obsEsteticas || '')}&movimiento=SALIDA&f_frontal=${encodeURIComponent(window.urlFotoFrontal)}&f_trasera=${encodeURIComponent(window.urlFotoTrasera)}&f_derecha=${encodeURIComponent(window.urlFotoDerecha)}&f_izquierda=${encodeURIComponent(window.urlFotoIzquierda)}&f_licencia=${encodeURIComponent(window.urlFotoLicencia)}`;
                 actualizarLinkEnHojaExcel(linkSalida);
             } else {
                 toggleHojas('ambas');
@@ -676,8 +681,8 @@
                 if (window.idDocFused) {
                     const docRef = doc(db, "servicios", window.idDocFused);
                     await updateDoc(docRef, {
-                        economico: registro.economico, fecha: registro.fecha, base: registro.base, kilometraje: registro.kilometraje,
-                        operador: registro.operador || '', // ✅ NUEVO
+                        economico: registro.economico, fecha: registro.fecha, base: registro.base, vin: registro.vin || '', kilometraje: registro.kilometraje, // ✅ NUEVO: vin
+                        operador: registro.operador || '',
                         mecanico: registro.mecanico, comentarios: registro.comentarios || '', obsEsteticas: registro.obsEsteticas || '', servicios: registro.servicios,
                         grupo: registro.grupo, fotos: registro.fotos || null, timestamp: Date.now(), estatus: estatusFinal
                     });
@@ -686,8 +691,8 @@
                     alert("✅ SERVICIO FUSIONADO Y COMPLETADO CON ÉXITO");
                 } else {
                     const docRef = await addDoc(serviciosRef, {
-                        economico: registro.economico, fecha: registro.fecha, base: registro.base, kilometraje: registro.kilometraje,
-                        operador: registro.operador || '', // ✅ NUEVO
+                        economico: registro.economico, fecha: registro.fecha, base: registro.base, vin: registro.vin || '', kilometraje: registro.kilometraje, // ✅ NUEVO: vin
+                        operador: registro.operador || '',
                         mecanico: registro.mecanico, comentarios: registro.comentarios || '', obsEsteticas: registro.obsEsteticas || '', servicios: registro.servicios,
                         grupo: registro.grupo, fotos: registro.fotos || null, timestamp: Date.now(), estatus: estatusFinal
                     });
@@ -717,8 +722,9 @@
 
                     document.getElementById('inputEco').value = datos.economico || '';
                     document.getElementById('inputBase').value = datos.base || '';
+                    document.getElementById('inputVin').value = datos.vin || ''; // ✅ NUEVO: restaura el VIN
                     document.getElementById('inputKm').value = datos.kilometraje || '';
-                    document.getElementById('inputOperador').value = datos.operador || ''; // ✅ NUEVO: restaura el operador
+                    document.getElementById('inputOperador').value = datos.operador || '';
                     document.getElementById('inputMecanico').value = datos.mecanico || '';
                     document.getElementById('inputComentarios').value = datos.comentarios || '';
                     document.getElementById('inputObsEsteticas').value = datos.obsEsteticas || '';
@@ -841,8 +847,9 @@
                 if (params.get('movimiento') === 'SALIDA') {
                     document.getElementById('inputEco').value = params.get('unidad') || "";
                     document.getElementById('inputBase').value = params.get('ruta') || "";
+                    document.getElementById('inputVin').value = params.get('vin') || ""; // ✅ NUEVO
                     document.getElementById('inputKm').value = params.get('km') || "";
-                    document.getElementById('inputOperador').value = params.get('operador') || ""; // ✅ NUEVO
+                    document.getElementById('inputOperador').value = params.get('operador') || "";
                     document.getElementById('inputComentarios').value = params.get('comentarios') || "";
                     document.getElementById('inputObsEsteticas').value = params.get('obsest') || "";
                     document.getElementById('inputMecanico').value = "";
@@ -882,8 +889,9 @@
 
                 document.getElementById('inputEco').value = uParam;
                 document.getElementById('inputBase').value = params.get('ruta') || "";
+                document.getElementById('inputVin').value = params.get('vin') || ""; // ✅ NUEVO
                 document.getElementById('inputKm').value = params.get('km') || "";
-                document.getElementById('inputOperador').value = params.get('operador') || ""; // ✅ NUEVO
+                document.getElementById('inputOperador').value = params.get('operador') || "";
                 document.getElementById('inputComentarios').value = params.get('comentarios') || "";
                 document.getElementById('inputObsEsteticas').value = params.get('obsest') || "";
                 document.getElementById('inputMecanico').value = "";
