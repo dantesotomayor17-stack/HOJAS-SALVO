@@ -134,6 +134,7 @@
                                     <option value="MGDT">Grupo MGDT</option>
                                     <option value="MD">Grupo MD</option>
                                     <option value="MT">Grupo MT</option>
+                                    <option value="MGT">Grupo MGT</option>
                                 </select>
                             </div>
                         </div>
@@ -383,6 +384,8 @@
             "MGDT": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR", "REVISION NIVEL ACEITE DIFERENCIAL", "CAMBIO DE ACEITE DIFERENCIAL", "NIVEL ACEITE DE TRANSMISION", "CAMBIO FILTROS DE TRANSMISION", "CAMBIO ACEITE TRANSMISION"],
             "MD": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "REVISION NIVEL ACEITE DIFERENCIAL", "CAMBIO DE ACEITE DIFERENCIAL"],
             "MT": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "NIVEL ACEITE DE TRANSMISION", "CAMBIO FILTROS DE TRANSMISION", "CAMBIO ACEITE TRANSMISION"]
+            "MGT": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR", "NIVEL ACEITE DE TRANSMISION", "CAMBIO FILTROS DE TRANSMISION", "CAMBIO ACEITE TRANSMISION"]
+
         };
 
         window.aplicarPaquete = function() {
@@ -790,6 +793,8 @@
                             else if(datos.grupo.includes("MD")) { document.getElementById('selectPaqueteM').value = "MD"; }
                             else if(datos.grupo.includes("MT")) { document.getElementById('selectPaqueteM').value = "MT"; }
                             else if(datos.grupo.includes("M")) { document.getElementById('selectPaqueteM').value = "M"; }
+                                                        else if(datos.grupo.includes("MGT")) { document.getElementById('selectPaqueteM').value = "MGT"; }
+
                         }
 
                         window.generarHoja();
