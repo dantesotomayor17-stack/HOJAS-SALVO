@@ -95,7 +95,6 @@
 
             <div id="vista-nuevo">
                 <form id="serviceForm" class="p-6" onsubmit="generarHoja(event)">
-                    <!-- ✅ NUEVO: se agregó la casilla "VIN" y el grid pasó a 4 columnas para que todo quepa amplio y al 100 -->
                     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8 bg-slate-50 p-4 rounded-lg border border-slate-200">
                         <div><label class="block text-sm font-semibold text-slate-700 mb-1">ECONÓMICO</label><input type="text" id="inputEco" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 uppercase" placeholder="Ej. ECO-01"></div>
                         <div><label class="block text-sm font-semibold text-slate-700 mb-1">BASE / RUTA</label><input type="text" id="inputBase" class="w-full px-3 py-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 uppercase" placeholder="Ej. BASE NORTE"></div>
@@ -129,6 +128,13 @@
                                     <option value="M5">Grupo M5</option>
                                     <option value="M6">Grupo M6</option>
                                     <option value="M7">Grupo M7</option>
+                                    <!-- ✅ NUEVOS GRUPOS -->
+                                    <option value="M">Grupo M</option>
+                                    <option value="MG">Grupo MG</option>
+                                    <option value="MGD">Grupo MGD</option>
+                                    <option value="MGDT">Grupo MGDT</option>
+                                    <option value="MD">Grupo MD</option>
+                                    <option value="MT">Grupo MT</option>
                                 </select>
                             </div>
                         </div>
@@ -241,7 +247,6 @@
 
             <div class="fr-title" id="fr-titulo-hoja">FORMATO RECEPCION.</div>
 
-            <!-- ✅ NUEVO: al lado de RUTA / BASE se agregó "VIN:" con su renglón (anchos recalculados para que quepa al 100) -->
             <div class="fr-row">
                 <span class="fr-label">NUM. ECONÓMICO:</span> 
                 <span class="fr-line-fixed" style="width: 80px;" id="fr-eco"></span>
@@ -366,7 +371,14 @@
                 "ENGRASADO DE CRUCETAS BARRA CARDAN", "ENGRASADO PERNO DE DIRECCION", "ENGRASADO DE TERMINALES DE DIRECCION", "ENGRASADO DE MATRACAS",
                 "CAMBIO DE BALEROS", "REVISION DE BALATAS", "CAMBIO DE BALATAS DELANTERAS", "CAMBIO DE BALATAS TRASERAS",
                 "CAMBIO DE SECADOR COMPLETO", "REVISION DE SISTEMA ELECTRICO", "CAMBIO DE CABLES Y BUJIAS"
-            ]
+            ],
+            // ✅ NUEVOS GRUPOS (M, MG, MGD, MGDT, MD, MT)
+            "M": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE"],
+            "MG": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR"],
+            "MGD": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR", "REVISION NIVEL ACEITE DIFERENCIAL", "CAMBIO DE ACEITE DIFERENCIAL"],
+            "MGDT": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR", "REVISION NIVEL ACEITE DIFERENCIAL", "CAMBIO DE ACEITE DIFERENCIAL", "NIVEL ACEITE DE TRANSMISION", "CAMBIO FILTROS DE TRANSMISION", "CAMBIO ACEITE TRANSMISION"],
+            "MD": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "REVISION NIVEL ACEITE DIFERENCIAL", "CAMBIO DE ACEITE DIFERENCIAL"],
+            "MT": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "NIVEL ACEITE DE TRANSMISION", "CAMBIO FILTROS DE TRANSMISION", "CAMBIO ACEITE TRANSMISION"]
         };
 
         window.aplicarPaquete = function() {
@@ -455,7 +467,7 @@
 
             const economico = document.getElementById('inputEco').value.toUpperCase();
             const base = document.getElementById('inputBase').value.toUpperCase();
-            const vin = document.getElementById('inputVin').value.toUpperCase(); // ✅ NUEVO: lee el VIN
+            const vin = document.getElementById('inputVin').value.toUpperCase();
             const kilometraje = document.getElementById('inputKm').value;
             const operador = document.getElementById('inputOperador').value.toUpperCase();
             const mecanico = document.getElementById('inputMecanico').value.toUpperCase();
@@ -541,7 +553,7 @@
 
             document.getElementById('fr-eco').innerText = economico;
             document.getElementById('fr-base').innerText = base;
-            document.getElementById('fr-vin').innerText = vin; // ✅ NUEVO: manda el VIN al renglón de la hoja
+            document.getElementById('fr-vin').innerText = vin;
             document.getElementById('fr-km-recepcion').innerText = kilometraje ? new Intl.NumberFormat('es-MX').format(kilometraje) : "";
             document.getElementById('fr-operador').innerText = operador;
 
@@ -646,7 +658,7 @@
 
             if(!modoSoloLectura && (serviciosMarcados.length > 0 || valorGrupo === "Correctivo")) {
                 guardarEnFirebase({ 
-                    fecha: fechaString, economico: economico, base: base, vin: vin, kilometraje: kilometraje, // ✅ NUEVO: vin se guarda
+                    fecha: fechaString, economico: economico, base: base, vin: vin, kilometraje: kilometraje,
                     operador: operador,
                     mecanico: mecanico, comentarios: textoComentarios, obsEsteticas: window.obsEsteticas, servicios: serviciosMarcados, grupo: grupoSeleccionado,
                     fotos: { frontal: window.urlFotoFrontal, trasera: window.urlFotoTrasera, derecha: window.urlFotoDerecha, izquierda: window.urlFotoIzquierda, licencia: window.urlFotoLicencia }
@@ -661,7 +673,6 @@
                 document.getElementById('btn-tg-servicio').style.display = 'none';
                 document.getElementById('btn-tg-ambas').style.display = 'none';
 
-                // ✅ NUEVO: se agrega &vin= al link de salida para conservar el dato
                 const linkSalida = `https://dantesotomayor17-stack.github.io/gestion-servicios-ego/?unidad=${encodeURIComponent(economico)}&ruta=${encodeURIComponent(base)}&vin=${encodeURIComponent(vin)}&km=${encodeURIComponent(kilometraje)}&operador=${encodeURIComponent(operador)}&comentarios=${encodeURIComponent(textoComentarios)}&obsest=${encodeURIComponent(window.obsEsteticas || '')}&movimiento=SALIDA&f_frontal=${encodeURIComponent(window.urlFotoFrontal)}&f_trasera=${encodeURIComponent(window.urlFotoTrasera)}&f_derecha=${encodeURIComponent(window.urlFotoDerecha)}&f_izquierda=${encodeURIComponent(window.urlFotoIzquierda)}&f_licencia=${encodeURIComponent(window.urlFotoLicencia)}`;
                 actualizarLinkEnHojaExcel(linkSalida);
             } else {
@@ -681,7 +692,7 @@
                 if (window.idDocFused) {
                     const docRef = doc(db, "servicios", window.idDocFused);
                     await updateDoc(docRef, {
-                        economico: registro.economico, fecha: registro.fecha, base: registro.base, vin: registro.vin || '', kilometraje: registro.kilometraje, // ✅ NUEVO: vin
+                        economico: registro.economico, fecha: registro.fecha, base: registro.base, vin: registro.vin || '', kilometraje: registro.kilometraje,
                         operador: registro.operador || '',
                         mecanico: registro.mecanico, comentarios: registro.comentarios || '', obsEsteticas: registro.obsEsteticas || '', servicios: registro.servicios,
                         grupo: registro.grupo, fotos: registro.fotos || null, timestamp: Date.now(), estatus: estatusFinal
@@ -691,7 +702,7 @@
                     alert("✅ SERVICIO FUSIONADO Y COMPLETADO CON ÉXITO");
                 } else {
                     const docRef = await addDoc(serviciosRef, {
-                        economico: registro.economico, fecha: registro.fecha, base: registro.base, vin: registro.vin || '', kilometraje: registro.kilometraje, // ✅ NUEVO: vin
+                        economico: registro.economico, fecha: registro.fecha, base: registro.base, vin: registro.vin || '', kilometraje: registro.kilometraje,
                         operador: registro.operador || '',
                         mecanico: registro.mecanico, comentarios: registro.comentarios || '', obsEsteticas: registro.obsEsteticas || '', servicios: registro.servicios,
                         grupo: registro.grupo, fotos: registro.fotos || null, timestamp: Date.now(), estatus: estatusFinal
@@ -722,7 +733,7 @@
 
                     document.getElementById('inputEco').value = datos.economico || '';
                     document.getElementById('inputBase').value = datos.base || '';
-                    document.getElementById('inputVin').value = datos.vin || ''; // ✅ NUEVO: restaura el VIN
+                    document.getElementById('inputVin').value = datos.vin || '';
                     document.getElementById('inputKm').value = datos.kilometraje || '';
                     document.getElementById('inputOperador').value = datos.operador || '';
                     document.getElementById('inputMecanico').value = datos.mecanico || '';
@@ -758,6 +769,13 @@
                             else if(datos.grupo.includes("M5")) { document.getElementById('selectPaqueteM').value = "M5"; }
                             else if(datos.grupo.includes("M6")) { document.getElementById('selectPaqueteM').value = "M6"; }
                             else if(datos.grupo.includes("M7")) { document.getElementById('selectPaqueteM').value = "M7"; }
+                            // ✅ NUEVOS GRUPOS (el orden importa: MGDT antes que MGD, y MGD antes que MG)
+                            else if(datos.grupo.includes("MGDT")) { document.getElementById('selectPaqueteM').value = "MGDT"; }
+                            else if(datos.grupo.includes("MGD")) { document.getElementById('selectPaqueteM').value = "MGD"; }
+                            else if(datos.grupo.includes("MG")) { document.getElementById('selectPaqueteM').value = "MG"; }
+                            else if(datos.grupo.includes("MD")) { document.getElementById('selectPaqueteM').value = "MD"; }
+                            else if(datos.grupo.includes("MT")) { document.getElementById('selectPaqueteM').value = "MT"; }
+                            else if(datos.grupo.includes("M")) { document.getElementById('selectPaqueteM').value = "M"; }
                         }
 
                         window.generarHoja();
@@ -847,7 +865,7 @@
                 if (params.get('movimiento') === 'SALIDA') {
                     document.getElementById('inputEco').value = params.get('unidad') || "";
                     document.getElementById('inputBase').value = params.get('ruta') || "";
-                    document.getElementById('inputVin').value = params.get('vin') || ""; // ✅ NUEVO
+                    document.getElementById('inputVin').value = params.get('vin') || "";
                     document.getElementById('inputKm').value = params.get('km') || "";
                     document.getElementById('inputOperador').value = params.get('operador') || "";
                     document.getElementById('inputComentarios').value = params.get('comentarios') || "";
@@ -889,7 +907,7 @@
 
                 document.getElementById('inputEco').value = uParam;
                 document.getElementById('inputBase').value = params.get('ruta') || "";
-                document.getElementById('inputVin').value = params.get('vin') || ""; // ✅ NUEVO
+                document.getElementById('inputVin').value = params.get('vin') || "";
                 document.getElementById('inputKm').value = params.get('km') || "";
                 document.getElementById('inputOperador').value = params.get('operador') || "";
                 document.getElementById('inputComentarios').value = params.get('comentarios') || "";
