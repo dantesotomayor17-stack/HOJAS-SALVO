@@ -132,6 +132,8 @@
                                     <option value="MG">Grupo MG</option>
                                     <option value="MGD">Grupo MGD</option>
                                     <option value="MGDT">Grupo MGDT</option>
+                                    <!-- ✅ NUEVO GRUPO MGT -->
+                                    <option value="MGT">Grupo MGT</option>
                                     <option value="MD">Grupo MD</option>
                                     <option value="MT">Grupo MT</option>
                                 </select>
@@ -274,8 +276,6 @@
                 <div class="foto-card"><div class="foto-header-title">4. LATERAL IZQUIERDO</div><img id="img-left" src="" class="foto-img-element ratio-h" onerror="this.src='https://placehold.co/400x267?text=Sin+Foto+Izq'"></div>
             </div>
 
-            <!-- ✅ Diagrama del autobús (4 vistas) con URL de Cloudinary. Se muestra en lugar de los cuadros cuando NO hay fotos.
-                 Si la imagen fallara, regresa automáticamente a los cuadros de fotos. -->
             <div id="fr-diagrama-bus" class="hidden-hoja" style="width: 100%; margin: 0 auto 15px auto; border: 1px solid black; padding: 6px; background-color: #ffffff; box-sizing: border-box;">
                 <img src="https://res.cloudinary.com/dygb7qjgt/image/upload/v1786115678/diagrama_bus.png_cikjds.jpg" alt="Diagrama de unidad - vistas frontal, trasera y laterales" style="width: 100%; display: block; object-fit: contain; background: #ffffff;" onerror="document.getElementById('fr-diagrama-bus').classList.add('hidden-hoja'); document.getElementById('fr-grid-fila1').classList.remove('hidden-hoja'); document.getElementById('fr-grid-fila2').classList.remove('hidden-hoja');">
             </div>
@@ -288,8 +288,6 @@
                 </div>
             </div>
 
-            <!-- Los renglones de OBSERVACIONES se llenan dinámicamente:
-                 ENTRADA = Observaciones Estéticas · SALIDA = Comentario del mecánico (+ obs. estéticas si existen) -->
             <div class="fr-obs-box" id="fr-caja-obs-recepcion">
                 <div class="fr-obs-title">OBSERVACIONES.</div>
                 <div class="fr-obs-line"></div><div class="fr-obs-line"></div><div class="fr-obs-line"></div><div class="fr-obs-line"></div>
@@ -381,6 +379,8 @@
             "MG": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR"],
             "MGD": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR", "REVISION NIVEL ACEITE DIFERENCIAL", "CAMBIO DE ACEITE DIFERENCIAL"],
             "MGDT": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR", "REVISION NIVEL ACEITE DIFERENCIAL", "CAMBIO DE ACEITE DIFERENCIAL", "NIVEL ACEITE DE TRANSMISION", "CAMBIO FILTROS DE TRANSMISION", "CAMBIO ACEITE TRANSMISION"],
+            // ✅ NUEVO GRUPO MGT: MG + Transmisión (sin diferencial)
+            "MGT": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "FILTRO DE GAS DE ALTA PRESION", "FILTRO DE GAS BAJA PRESION ZONA DE POSTENFRIADOR", "FILTRO DE GAS BAJA PRESION ZONA MOTOR", "NIVEL ACEITE DE TRANSMISION", "CAMBIO FILTROS DE TRANSMISION", "CAMBIO ACEITE TRANSMISION"],
             "MD": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "REVISION NIVEL ACEITE DIFERENCIAL", "CAMBIO DE ACEITE DIFERENCIAL"],
             "MT": ["CAMBIO DE ACEITE DE MOTOR", "CAMBIO DE FILTRO DE ACEITE MOTOR", "CAMBIO DE FILTRO DE AIRE", "NIVEL ACEITE DE TRANSMISION", "CAMBIO FILTROS DE TRANSMISION", "CAMBIO ACEITE TRANSMISION"]
         };
@@ -576,7 +576,6 @@
                 document.getElementById('fr-label-carroceria').classList.remove('hidden-hoja');
                 document.getElementById('fr-licencia-salida').classList.add('hidden-hoja');
 
-                // Si NO hay ninguna foto → se muestra el diagrama del autobús; si SÍ hay fotos → cuadros con fotos.
                 const hayFotos = !!(window.urlFotoFrontal || window.urlFotoTrasera || window.urlFotoDerecha || window.urlFotoIzquierda || window.urlFotoLicencia);
                 if (hayFotos) {
                     document.getElementById('fr-grid-fila1').classList.remove('hidden-hoja');
@@ -636,13 +635,6 @@
             if(window.urlFotoIzquierda) document.getElementById('img-left').src = window.urlFotoIzquierda;
             if(window.urlFotoLicencia) document.getElementById('img-licencia').src = window.urlFotoLicencia;
 
-            // =====================================================================
-            // OBSERVACIONES (renglones de la hoja):
-            //  · ENTRADA → se llenan con las "Observaciones Estéticas" (como siempre)
-            //  · SALIDA  → se llenan con el COMENTARIO DEL MECÁNICO; y si además
-            //              alguien escribió Observaciones Estéticas, van en el
-            //              renglón siguiente para que nada se pierda.
-            // =====================================================================
             const cajaObs = document.getElementById('fr-caja-obs-recepcion');
             if (cajaObs) {
                 const estiloTexto = "font-size: 11px; font-weight: bold; padding: 2px 0; border-bottom: 1px solid black; min-height: 14px;";
@@ -661,7 +653,6 @@
                     }
                 }
 
-                // Completa con renglones vacíos hasta dejar 4 líneas en total
                 const renglonesVacios = Math.max(0, 4 - lineasHTML.length);
                 let html = `<div class="fr-obs-title">OBSERVACIONES.</div>` + lineasHTML.join("");
                 for (let i = 0; i < renglonesVacios; i++) {
@@ -669,7 +660,6 @@
                 }
                 cajaObs.innerHTML = html;
             }
-            // ===== FIN OBSERVACIONES =====
 
             if(!modoSoloLectura && (serviciosMarcados.length > 0 || valorGrupo === "Correctivo")) {
                 guardarEnFirebase({ 
@@ -784,7 +774,9 @@
                             else if(datos.grupo.includes("M5")) { document.getElementById('selectPaqueteM').value = "M5"; }
                             else if(datos.grupo.includes("M6")) { document.getElementById('selectPaqueteM').value = "M6"; }
                             else if(datos.grupo.includes("M7")) { document.getElementById('selectPaqueteM').value = "M7"; }
+                            // ✅ Orden importante: los más largos primero para evitar falsos positivos
                             else if(datos.grupo.includes("MGDT")) { document.getElementById('selectPaqueteM').value = "MGDT"; }
+                            else if(datos.grupo.includes("MGT")) { document.getElementById('selectPaqueteM').value = "MGT"; } // ✅ NUEVO
                             else if(datos.grupo.includes("MGD")) { document.getElementById('selectPaqueteM').value = "MGD"; }
                             else if(datos.grupo.includes("MG")) { document.getElementById('selectPaqueteM').value = "MG"; }
                             else if(datos.grupo.includes("MD")) { document.getElementById('selectPaqueteM').value = "MD"; }
