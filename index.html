@@ -274,10 +274,10 @@
                 <div class="foto-card"><div class="foto-header-title">4. LATERAL IZQUIERDO</div><img id="img-left" src="" class="foto-img-element ratio-h" onerror="this.src='https://placehold.co/400x267?text=Sin+Foto+Izq'"></div>
             </div>
 
-            <!-- ✅ NUEVO: Diagrama del autobús (4 vistas). Se muestra en lugar de los cuadros cuando NO hay fotos.
-                 Guarda la imagen como "diagrama_bus.png" junto a tu index.html (o cambia el src por tu URL de Cloudinary). -->
+            <!-- ✅ Diagrama del autobús (4 vistas) con URL de Cloudinary. Se muestra en lugar de los cuadros cuando NO hay fotos.
+                 Si la imagen fallara, regresa automáticamente a los cuadros de fotos. -->
             <div id="fr-diagrama-bus" class="hidden-hoja" style="width: 100%; margin: 0 auto 15px auto; border: 1px solid black; padding: 6px; background-color: #ffffff; box-sizing: border-box;">
-                <img src="diagrama_bus.png" alt="Diagrama de unidad - vistas frontal, trasera y laterales" style="width: 100%; display: block; object-fit: contain; background: #ffffff;">
+                <img src="https://res.cloudinary.com/dygb7qjgt/image/upload/v1786115678/diagrama_bus.png_cikjds.jpg" alt="Diagrama de unidad - vistas frontal, trasera y laterales" style="width: 100%; display: block; object-fit: contain; background: #ffffff;" onerror="document.getElementById('fr-diagrama-bus').classList.add('hidden-hoja'); document.getElementById('fr-grid-fila1').classList.remove('hidden-hoja'); document.getElementById('fr-grid-fila2').classList.remove('hidden-hoja');">
             </div>
 
             <div class="licencia-salida-wrap hidden-hoja" id="fr-licencia-salida">
@@ -569,15 +569,14 @@
                 document.getElementById('fr-label-carroceria').classList.add('hidden-hoja');
                 document.getElementById('fr-grid-fila1').classList.add('hidden-hoja');
                 document.getElementById('fr-grid-fila2').classList.add('hidden-hoja');
-                document.getElementById('fr-diagrama-bus').classList.add('hidden-hoja'); // ✅ diagrama oculto en salida
+                document.getElementById('fr-diagrama-bus').classList.add('hidden-hoja');
                 document.getElementById('fr-licencia-salida').classList.remove('hidden-hoja');
                 if (window.urlFotoLicencia) document.getElementById('img-licencia-salida').src = window.urlFotoLicencia;
             } else {
                 document.getElementById('fr-label-carroceria').classList.remove('hidden-hoja');
                 document.getElementById('fr-licencia-salida').classList.add('hidden-hoja');
 
-                // ✅ NUEVO: si NO hay ninguna foto, se muestra el diagrama del autobús en lugar de los cuadros;
-                //           si SÍ hay fotos, se muestran los cuadros con las fotos como siempre.
+                // Si NO hay ninguna foto → se muestra el diagrama del autobús; si SÍ hay fotos → cuadros con fotos.
                 const hayFotos = !!(window.urlFotoFrontal || window.urlFotoTrasera || window.urlFotoDerecha || window.urlFotoIzquierda || window.urlFotoLicencia);
                 if (hayFotos) {
                     document.getElementById('fr-grid-fila1').classList.remove('hidden-hoja');
